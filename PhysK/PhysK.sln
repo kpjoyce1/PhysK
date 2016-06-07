@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysK", "PhysK\PhysK\PhysK.csproj", "{57930E3E-F95D-46C5-81FE-7CD9FFE38725}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "PhysKContent", "PhysK\PhysKContent\PhysKContent.contentproj", "{0034980E-B9FD-4AF2-A44E-818FAB1DB680}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57930E3E-F95D-46C5-81FE-7CD9FFE38725}.Debug|x86.ActiveCfg = Debug|x86
+		{57930E3E-F95D-46C5-81FE-7CD9FFE38725}.Debug|x86.Build.0 = Debug|x86
+		{57930E3E-F95D-46C5-81FE-7CD9FFE38725}.Release|x86.ActiveCfg = Release|x86
+		{57930E3E-F95D-46C5-81FE-7CD9FFE38725}.Release|x86.Build.0 = Release|x86
+		{0034980E-B9FD-4AF2-A44E-818FAB1DB680}.Debug|x86.ActiveCfg = Debug|x86
+		{0034980E-B9FD-4AF2-A44E-818FAB1DB680}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
