@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{57930E3E-F95D-46C5-81FE-7CD9FFE38725}</ProjectGuid>
+    <ProjectGuid>{91202A33-0932-480A-B594-F686EC34D35F}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PhysK</RootNamespace>
-    <AssemblyName>PhysK</AssemblyName>
+    <RootNamespace>PhysKSample</RootNamespace>
+    <AssemblyName>PhysKSample</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>Reach</XnaProfile>
-    <XnaCrossPlatformGroupID>10f1d4c8-2ede-40eb-826c-f82275259632</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>87972bb9-89cf-4725-a6d2-478abf3d0612</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
@@ -59,9 +59,6 @@
     <PlatformTarget>x86</PlatformTarget>
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -75,21 +72,28 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Circle.cs" />
-    <Compile Include="DebugView.cs" />
-    <Compile Include="MathUtils.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="GameApplication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Particle.cs" />
-    <Compile Include="Rigidbody.cs" />
-    <Compile Include="Shape.cs" />
-    <Compile Include="SpatialGrid.cs" />
-    <Compile Include="World.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Sprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\PhysK\PhysK\PhysK.csproj">
+      <Project>{57930E3E-F95D-46C5-81FE-7CD9FFE38725}</Project>
+      <Name>PhysK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhysK SampleContent\PhysK SampleContent.contentproj">
+      <Project>{C4AED81B-0083-471A-B3E1-4DEA1AFCDB22}</Project>
+      <Name>PhysK SampleContent</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

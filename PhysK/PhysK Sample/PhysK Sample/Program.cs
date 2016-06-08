@@ -1,6 +1,6 @@
 using System;
 
-namespace PhysK
+namespace PhysKSample
 {
 #if WINDOWS || XBOX
     static class Program

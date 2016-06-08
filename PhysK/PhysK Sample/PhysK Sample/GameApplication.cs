@@ -8,19 +8,24 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using PhysK;
 
-namespace PhysK
+namespace PhysKSample
 { 
-    public class GameApplication : Microsoft.Xna.Framework.Game
+    public class GameApplication : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
-        World world;
-        public static SpriteFont font;
-        int frames;
-        int fps;
-        TimeSpan fpsTimer;
+        private World world;
+        private DebugView debugView;
+        private Camera camera;
+
+        private SpriteFont font;
+        private int frames;
+        private int fps;
+        private TimeSpan fpsTimer;
+        private Sprite[] Taylors;
 
         public GameApplication()
         {
@@ -43,24 +48,34 @@ namespace PhysK
             graphics.PreferredBackBufferHeight = 800;
             graphics.ApplyChanges();
             world = new World(GraphicsDevice);
+            camera = new Camera(GraphicsDevice);
+            camera.Position = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) / 2;
+
+            debugView = new DebugView(GraphicsDevice, world);
+            
 
             font = Content.Load<SpriteFont>("spritefont");
 
             Random gen = new Random();
 
-            int TaylorNumber = 400;
+            int TaylorNumber = 10;
             //10000 seems to be the limit of just drawing and bouncing off the screen
             //so the upper limit for collision checking is 10000
-            PhysicsSprite[] Taylors = new PhysicsSprite[TaylorNumber];
+            Taylors = new Sprite[TaylorNumber];
+            Particle[] particles = new Particle[TaylorNumber];
             for (int i = 0; i < TaylorNumber; i++)
             {
 
-                Taylors[i] = new PhysicsSprite(Content.Load<Texture2D>(string.Format("circle{0}",gen.Next(1, 5))), 
-                    new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - 50), gen.Next(0, GraphicsDevice.Viewport.Width - 50)),
-                    Color.White, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
-                     gen.Next(21, 21), 1f);
-            }
-            world.Items = Taylors;
+                Taylors[i] = new Sprite(Content.Load<Texture2D>(string.Format("circle{0}", gen.Next(1, 5))),
+                    new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - 50),
+                        gen.Next(0, GraphicsDevice.Viewport.Width - 50)));
+                Taylors[i].SetCenterOrigin();
+
+                particles[i] = new Rigidbody(new Circle(25), Taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
+                    gen.Next(21, 21), 1f);
+
+        }
+        world.Items = particles;
 
         }
 
@@ -71,10 +86,6 @@ namespace PhysK
 
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
             fpsTimer += gameTime.ElapsedGameTime;
             if(fpsTimer > TimeSpan.FromSeconds(1))
             {
@@ -83,8 +94,13 @@ namespace PhysK
                 fpsTimer = TimeSpan.Zero;
             }
 
-            // TODO: Add your update logic here
             world.Update(gameTime);
+
+            for (int i = 0; i < world.Items.Length; i++)
+            {
+                Taylors[i].Position = world.Items[i].Position;
+            }
+
 
             base.Update(gameTime);
         }
@@ -93,11 +109,28 @@ namespace PhysK
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             frames++;
-            // TODO: Add your drawing code here
+
             spriteBatch.Begin();
-            world.Draw(spriteBatch);
-            spriteBatch.DrawString(font, fps.ToString(), new Vector2(GraphicsDevice.Viewport.Width - 40, 0), Color.Black);
+
+            foreach (Sprite taylor in Taylors)
+            {
+                taylor.Draw(spriteBatch);
+            }
+
             spriteBatch.End();
+
+
+            debugView.Draw(camera.View, camera.Projection);
+
+            spriteBatch.Begin();
+            
+            spriteBatch.DrawString(font, fps.ToString(), new Vector2(GraphicsDevice.Viewport.Width - 40, 0), Color.Black);
+            
+            spriteBatch.DrawString(font, world.Hamiltonian.ToString(), Vector2.Zero, Color.Black);
+
+            spriteBatch.End();
+
+
             base.Draw(gameTime);
         }
     }
