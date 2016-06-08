@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="circle_taylor_swift.png">
-      <Name>circle</Name>
+      <Name>circle1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

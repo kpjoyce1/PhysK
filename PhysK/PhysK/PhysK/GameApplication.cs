@@ -15,10 +15,12 @@ namespace PhysK
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        PhysicsSprite tay, tay2, tay3, tay4;
 
         World world;
         public static SpriteFont font;
+        int frames;
+        int fps;
+        TimeSpan fpsTimer;
 
         public GameApplication()
         {
@@ -37,16 +39,28 @@ namespace PhysK
         {
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            tay = new PhysicsSprite(Content.Load<Texture2D>("circle"), Vector2.Zero, Color.White, 2f * Vector2.One, 1f, 0f);
-            tay2 = new PhysicsSprite(Content.Load<Texture2D>("circle2"), Vector2.One * 200f, Color.White, -Vector2.One, 1f, 0f);
-            tay3 = new PhysicsSprite(Content.Load<Texture2D>("circle3"), new Vector2(100, 400), Color.White, new Vector2(3, 2), 100f, -1f);
-            tay4 = new PhysicsSprite(Content.Load<Texture2D>("circle4"), new Vector2(200, 600), Color.White, new Vector2(9, 2), 1f, -1f);
-
+            graphics.PreferredBackBufferWidth = 1200;
+            graphics.PreferredBackBufferHeight = 800;
+            graphics.ApplyChanges();
             world = new World(GraphicsDevice);
 
             font = Content.Load<SpriteFont>("spritefont");
 
-            world.Items = new PhysicsSprite []{ tay, tay2, tay3, tay4 };
+            Random gen = new Random();
+
+            int TaylorNumber = 400;
+            //10000 seems to be the limit of just drawing and bouncing off the screen
+            //so the upper limit for collision checking is 10000
+            PhysicsSprite[] Taylors = new PhysicsSprite[TaylorNumber];
+            for (int i = 0; i < TaylorNumber; i++)
+            {
+
+                Taylors[i] = new PhysicsSprite(Content.Load<Texture2D>(string.Format("circle{0}",gen.Next(1, 5))), 
+                    new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - 50), gen.Next(0, GraphicsDevice.Viewport.Width - 50)),
+                    Color.White, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
+                     gen.Next(21, 21), 1f);
+            }
+            world.Items = Taylors;
 
         }
 
@@ -61,6 +75,14 @@ namespace PhysK
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            fpsTimer += gameTime.ElapsedGameTime;
+            if(fpsTimer > TimeSpan.FromSeconds(1))
+            {
+                fps = frames;
+                frames = 0;
+                fpsTimer = TimeSpan.Zero;
+            }
+
             // TODO: Add your update logic here
             world.Update(gameTime);
 
@@ -70,10 +92,11 @@ namespace PhysK
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            frames++;
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             world.Draw(spriteBatch);
+            spriteBatch.DrawString(font, fps.ToString(), new Vector2(GraphicsDevice.Viewport.Width - 40, 0), Color.Black);
             spriteBatch.End();
             base.Draw(gameTime);
         }

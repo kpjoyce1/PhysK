@@ -94,6 +94,7 @@ namespace PhysK
 
         public Vector2 Momentum { get { return velocity * mass; } }
 
+        public int SpatialGridID;
 
         public PhysicsSprite(Texture2D texture, Vector2 position, Color color, Vector2 velocity, float mass, float restitution)
             : base(texture, position, texture.Bounds, color, 0f, Vector2.Zero, Vector2.One, 1f)
