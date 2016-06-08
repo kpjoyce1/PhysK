@@ -7,13 +7,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PhysK
 {
-    class World
+    public class World
     {
-        public static Texture2D pixel; /*!< A static pixel for debugging purposes */
+        public static GraphicsDevice GraphicsDevice { private set; get; }
 
-        private PhysicsSprite[] items; /*!< The physics objects contained in the world that will be interacting */
+        private Particle[] items; /*!< The physics objects contained in the world that will be interacting */
 
-        public PhysicsSprite[] Items
+        public Particle[] Items
         {
             get { return items; }
             set { items = value; }
@@ -27,6 +27,7 @@ namespace PhysK
             set { bounds = value; }
         }
 
+        public float Hamiltonian { get; private set; }
 
         private SpatialGrid[] grids;
 
@@ -34,10 +35,9 @@ namespace PhysK
 
         public World(GraphicsDevice graphicsDevice, bool permeable = false)
         {
-            pixel = new Texture2D(graphicsDevice, 1, 1);
-            pixel.SetData<Color>(new Color[] { Color.White });
+            GraphicsDevice = graphicsDevice;
 
-            items = new PhysicsSprite[100];
+            items = new Particle[100];
 
             bounds = new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
 
@@ -56,25 +56,34 @@ namespace PhysK
 
         public void Update(GameTime gameTime)
         {
-            for(int i = 0; i < items.Length; i++)
+            Hamiltonian = 0;
+            for (int i = 0; i < items.Length; i++)
             {
                 items[i].Update(gameTime);
-                WorldContainment(items[i]);
+                if (items[i] is Rigidbody)
+                {
+                    WorldContainment(items[i] as Rigidbody);
+                }
+                else
+                {
+                    WorldContainment(items[i]);
+                }
+                Hamiltonian += items[i].Velocity.LengthSquared() * items[i].Mass;
             }
-
-
 
             for (int i = 0; i < items.Length; i++)
             {
+                Circle circle = (items[i] as Rigidbody).Shape as Circle;
                 for (int j = i + 1; j < items.Length; j++)
                 {
-                    if (Vector2.Distance(items[i].Center + items[i].Velocity, items[j].Center + items[j].Velocity) < items[i].Radius + items[j].Radius)
+                    Circle circle1 = (items[j] as Rigidbody).Shape as Circle;
+                    if (Vector2.Distance(items[i].Position + items[i].Velocity, items[j].Position + items[j].Velocity) < circle.Radius + circle1.Radius)
                     {
                         //collission
                         Vector2 initialI = items[i].Velocity;
                         Vector2 initialJ = items[j].Velocity;
 
-                        Vector2 normal = items[i].Center - items[j].Center;
+                        Vector2 normal = items[i].Position - items[j].Position;
                         normal.Normalize();
 
                         Vector2 effectiveVelocityI = Vector2.Dot(initialI, normal) * normal;
@@ -92,29 +101,26 @@ namespace PhysK
                     }
                 }
             }
-
-            
-
         }
 
-        private void WorldContainment(PhysicsSprite entity)
+        private void WorldContainment(Particle entity)
         {
             if (!Permeable)
             {
-                if (entity.AllignedHitbox.Left < bounds.Left)
+                if (entity.Position.X < bounds.Left)
                 {
                     entity.Velocity = new Vector2(Math.Abs(entity.Velocity.X), entity.Velocity.Y);
                 }
-                else if (entity.AllignedHitbox.Right > bounds.Right)
+                else if (entity.Position.X > bounds.Right)
                 {
                     entity.Velocity = new Vector2(-Math.Abs(entity.Velocity.X), entity.Velocity.Y);
                 }
 
-                if (entity.AllignedHitbox.Top < bounds.Top)
+                if (entity.Position.Y < bounds.Top)
                 {
                     entity.Velocity = new Vector2(entity.Velocity.X, Math.Abs(entity.Velocity.Y));
                 }
-                else if (entity.AllignedHitbox.Bottom > bounds.Bottom)
+                else if (entity.Position.Y > bounds.Bottom)
                 {
                     entity.Velocity = new Vector2(entity.Velocity.X, -Math.Abs(entity.Velocity.Y));
                 }
@@ -122,19 +128,29 @@ namespace PhysK
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        private void WorldContainment(Rigidbody entity)
         {
-            float Hamiltonian = 0;
-            foreach(Sprite sprite in Items)
+            if (!Permeable)
             {
-                sprite.Draw(spriteBatch);
-                if(sprite is PhysicsSprite)
+                if (entity.Shape.AABB.Left + entity.Position.X < bounds.Left)
                 {
-                    Hamiltonian += ((PhysicsSprite)sprite).Velocity.LengthSquared() * ((PhysicsSprite)sprite).Mass;
+                    entity.Velocity = new Vector2(Math.Abs(entity.Velocity.X), entity.Velocity.Y);
                 }
-                
+                else if (entity.Shape.AABB.Right + entity.Position.X > bounds.Right)
+                {
+                    entity.Velocity = new Vector2(-Math.Abs(entity.Velocity.X), entity.Velocity.Y);
+                }
+
+                if (entity.Shape.AABB.Top + entity.Position.Y < bounds.Top)
+                {
+                    entity.Velocity = new Vector2(entity.Velocity.X, Math.Abs(entity.Velocity.Y));
+                }
+                else if (entity.Shape.AABB.Bottom + entity.Position.Y > bounds.Bottom)
+                {
+                    entity.Velocity = new Vector2(entity.Velocity.X, -Math.Abs(entity.Velocity.Y));
+                }
+
             }
-            spriteBatch.DrawString(GameApplication.font, Hamiltonian.ToString(), Vector2.Zero, Color.Black);
         }
     }
 }

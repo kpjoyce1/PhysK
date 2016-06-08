@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace PhysK
 {
-    class SpatialGrid
+    public class SpatialGrid
     {
         private Rectangle bounds; /*!< Spatail grid bounds */
 
@@ -17,9 +17,9 @@ namespace PhysK
         }
 
         //Consider using an array
-        private List<PhysicsSprite> items; /*!< Items contained within this grid */
+        private List<Particle> items; /*!< Items contained within this grid */
 
-        public List<PhysicsSprite> Items
+        public List<Particle> Items
         {
             get { return items; }
             set { items = value; }
@@ -37,17 +37,14 @@ namespace PhysK
         public SpatialGrid(Rectangle bounds)
         {
             this.bounds = bounds;
-            this.items = new List<PhysicsSprite>();
+            this.items = new List<Particle>();
         }
 
-        public void initiallyPopulate(PhysicsSprite [] entities)
+        public void initiallyPopulate(Particle[] entities)
         {
-            for(int i = 0; i < entities.Length; i++)
+            for (int i = 0; i < entities.Length; i++)
             {
-                if(entities[i].AllignedHitbox.Intersects(this.bounds))
-                {
-                    items.Add(entities[i]);
-                }
+                AddItem(entities[i]);
             }
         }
 
@@ -55,23 +52,43 @@ namespace PhysK
         {
             for (int i = 0; i < items.Count; i++)
             {
-                if(!items[i].AllignedHitbox.Intersects(this.bounds))
+                if (items[i] is Rigidbody)
                 {
-                    items.RemoveAt(i);
+                    if (!(items[i] as Rigidbody).Shape.AABB.Intersects(this.bounds))
+                    {
+                        items.RemoveAt(i);
+                    }
+                }
+                else
+                {
+                    if (!this.bounds.Contains((int)items[i].Position.X, (int)items[i].Position.Y))
+                    {
+                        items.RemoveAt(i);
+                    }
                 }
             }
         }
 
-        public void AddItem(PhysicsSprite entity)
+        public void AddItem(Particle entity)
         {
-            if (!items.Contains(entity) && entity.AllignedHitbox.Intersects(this.bounds))
+            if (entity is Rigidbody)
             {
-                items.Add(entity);
-                entity.SpatialGridID = this.id;
+                if (!(entity as Rigidbody).Shape.AABB.Intersects(this.bounds))
+                {
+                    items.Add(entity);
+                }
             }
+            else
+            {
+                if (!this.bounds.Contains((int)entity.Position.X, (int)entity.Position.Y))
+                {
+                    items.Add(entity);
+                }
+            }
+
         }
 
-        public PhysicsSprite[] getPossibleCollisions()
+        public Particle[] getPossibleCollisions()
         {
             return items.ToArray();
         }
