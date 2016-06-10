@@ -13,9 +13,9 @@ namespace PhysK
             set { vertices = value; }
         }
 
-        private Rectangle aabb;
+        private RectangleF aabb;
 
-        public Rectangle AABB
+        public RectangleF AABB
         {
             get { return aabb; }
             set { aabb = value; }
@@ -24,13 +24,13 @@ namespace PhysK
         public Shape(params Vector2[] vertices)
         {
             this.vertices = vertices;
-            aabb = new Rectangle();
+            aabb = new RectangleF();
             if (vertices.Length > 0)
             {
-                aabb.X = (int) vertices.ToList().Min(vertex => vertex.X);
-                aabb.Y = (int) vertices.ToList().Min(vertex => vertex.Y);
-                aabb.Width = (int) (vertices.ToList().Max(vertex => vertex.X) - aabb.X);
-                aabb.Height = (int) (vertices.ToList().Max(vertex => vertex.Y) - aabb.Y);
+                aabb.X =  (vertices.ToList().Min(vertex => vertex.X);
+                aabb.Y =  (vertices.ToList().Min(vertex => vertex.Y);
+                aabb.Width =  (vertices.ToList().Max(vertex => vertex.X) - aabb.X);
+                aabb.Height =  (vertices.ToList().Max(vertex => vertex.Y) - aabb.Y);
             }
         }
     }

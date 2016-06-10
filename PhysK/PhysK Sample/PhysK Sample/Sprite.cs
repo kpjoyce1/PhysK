@@ -142,7 +142,7 @@ namespace PhysKSample
 
         public Sprite(Texture2D texture, Vector2 position, Rectangle sourceRectangle, Color color, Vector2 origin, float rotation, Vector2 scale, SpriteEffects effects, float layerDepth)
         {
-            this.texture = texture??pixel;
+            this.texture = texture??Pixel;
             this.position = position;
             this.sourceRectangle = sourceRectangle;
             this.color = color;
