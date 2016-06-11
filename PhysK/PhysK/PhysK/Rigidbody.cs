@@ -34,10 +34,7 @@ namespace PhysK
 
         private Shape shape;
 
-        public Shape Shape
-        {
-            get { return shape; }
-        }
+        public Shape Shape => shape;
 
         public Rigidbody(Shape shape, Vector2 position, Vector2 velocity, float mass, float restitution)
             : base(position, velocity, mass, restitution)
@@ -47,8 +44,9 @@ namespace PhysK
 
         public override void Update(GameTime gameTime)
         {
+            angularAcceleration = 0;
+            rotation += angularVelocity += angularAcceleration;
             base.Update(gameTime);
-            shape.Aabb.Offset(Velocity);
         }
     }
 }

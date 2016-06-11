@@ -5,6 +5,15 @@ namespace PhysK
 {
     public class Shape
     {
+        // Used for Edge Colliders
+        private bool isHollow;
+
+        public bool IsHollow
+        {
+            get { return isHollow; }
+            set { isHollow = value; }
+        }
+
         private Vector2[] vertices;
 
         public Vector2[] Vertices
@@ -15,7 +24,7 @@ namespace PhysK
 
         private RectangleF aabb;
 
-        public RectangleF Aabb
+        public RectangleF AABB
         {
             get { return aabb; }
             set { aabb = value; }
@@ -25,6 +34,11 @@ namespace PhysK
         {
             this.vertices = vertices;
             aabb = new RectangleF();
+            UpdateAABB();
+        }
+
+        public void UpdateAABB()
+        {
             if (vertices.Length > 0)
             {
                 aabb.X = vertices.ToList().Min(vertex => vertex.X);

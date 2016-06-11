@@ -58,7 +58,7 @@ namespace PhysK
 
         public int SpatialGridId;
 
-        public Vector2 Momentum { get { return velocity * mass; } }
+        public Vector2 Momentum => velocity * mass;
 
         public Particle(Vector2 position, Vector2 velocity, float mass, float restitution)
         {

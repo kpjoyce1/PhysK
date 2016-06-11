@@ -66,13 +66,21 @@ namespace PhysKSample
             for (int i = 0; i < taylorNumber; i++)
             {
 
-                taylors[i] = new Sprite(Content.Load<Texture2D>(string.Format("circle{0}", gen.Next(1, 5))),
+                taylors[i] = new Sprite(
+                    Content.Load<Texture2D>($"circle{gen.Next(1, 5)}"),
                     new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - 50),
-                        gen.Next(0, GraphicsDevice.Viewport.Width - 50)));
+                        gen.Next(0, GraphicsDevice.Viewport.Width - 50))
+                );
+
                 taylors[i].SetCenterOrigin();
 
-                particles[i] = new Rigidbody(new Circle(25), taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
-                    gen.Next(21, 21), 1f);
+                particles[i] = new Rigidbody(
+                    new Circle(25) { IsHollow = gen.Next(2) == 1 }, 
+                    taylors[i].Position,
+                    new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
+                    gen.Next(21, 21), 
+                    1f
+                );
 
         }
         world.Items = particles;

@@ -54,7 +54,7 @@ namespace PhysK
             {
                 if (items[i] is Rigidbody)
                 {
-                    if (!(items[i] as Rigidbody).Shape.Aabb.Intersects(bounds))
+                    if (!(items[i] as Rigidbody).Shape.AABB.Intersects(bounds))
                     {
                         items.RemoveAt(i);
                     }
@@ -73,7 +73,7 @@ namespace PhysK
         {
             if (entity is Rigidbody)
             {
-                if (!(entity as Rigidbody).Shape.Aabb.Intersects(bounds))
+                if (!(entity as Rigidbody).Shape.AABB.Intersects(bounds))
                 {
                     items.Add(entity);
                 }

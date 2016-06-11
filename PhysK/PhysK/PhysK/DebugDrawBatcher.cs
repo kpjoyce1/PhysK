@@ -29,7 +29,7 @@ namespace PhysK
                 circleVertexPositionColors[0] = Vector2.Zero;
                 for (int i = 1; i < circleVertexPositionColors.Length - 1; i++)
                 {
-                    circleVertexPositionColors[i] = MathUtils.GetUnitCircle(MathHelper.TwoPi * i / circleVertexPositionColors.Length);
+                    circleVertexPositionColors[i] = MathUtils.GetUnitCircle(MathHelper.TwoPi * i / circleVertexPositionColors.Length)/2;
                 }
                 circleVertexPositionColors[circleVertexPositionColors.Length - 1] = circleVertexPositionColors[1];
                 vertexPositionColors = new Dictionary<Shape, Vector2[]>();
@@ -67,12 +67,12 @@ namespace PhysK
             if (particle is Rigidbody)
             {
                 Rigidbody rigidbody = particle as Rigidbody;
-                
-                if (rigidbody.Shape is Circle)
+                Matrix transform = Matrix.CreateScale(rigidbody.Shape.AABB.Size.ToVector3()) *
+                                    Matrix.CreateFromYawPitchRoll(0, 0, rigidbody.Rotation) *
+                                    Matrix.CreateTranslation(particle.Position.ToVector3());
+
+                if (rigidbody.Shape.Vertices.Length < 3)
                 {
-                    Matrix transform = Matrix.CreateScale(rigidbody.Shape.Aabb.Size.ToVector3() / 2) *
-                                        Matrix.CreateFromYawPitchRoll(0, 0, (particle as Rigidbody).Rotation) *
-                                        Matrix.CreateTranslation(particle.Position.ToVector3());
                     for (int i = 0; i < circleVertexPositionColors.Length - 1; i++)
                     {
                         addLine(Vector2.Transform(circleVertexPositionColors[i], transform),
@@ -82,9 +82,6 @@ namespace PhysK
                 }
                 else
                 {
-                    Matrix transform = Matrix.CreateScale(rigidbody.Shape.Aabb.Size.ToVector3()) *
-                                        Matrix.CreateFromYawPitchRoll(0, 0, (particle as Rigidbody).Rotation) *
-                                        Matrix.CreateTranslation(particle.Position.ToVector3());
                     for (int i = 0; i < rigidbody.Shape.Vertices.Length - 1; i++)
                     {
                         addLine(Vector2.Transform(circleVertexPositionColors[i], transform),

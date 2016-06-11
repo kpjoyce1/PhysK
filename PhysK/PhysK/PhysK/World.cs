@@ -73,13 +73,13 @@ namespace PhysK
 
             for (int i = 0; i < items.Length; i++)
             {
-                Circle circle = (items[i] as Rigidbody).Shape as Circle;
                 for (int j = i + 1; j < items.Length; j++)
                 {
-                    Circle circle1 = (items[j] as Rigidbody).Shape as Circle;
-                    if (Vector2.Distance(items[i].Position + items[i].Velocity, items[j].Position + items[j].Velocity) < circle.Radius + circle1.Radius)
+                    if (Vector2.Distance(items[i].Position + items[i].Velocity, items[j].Position + items[j].Velocity) < 
+                                                                                                    (items[i] is Rigidbody ? (items[i] as Rigidbody).Shape.AABB.Width / 2 : 0) +
+                                                                                                    (items[j] is Rigidbody ? (items[j] as Rigidbody).Shape.AABB.Width / 2: 0))
                     {
-                        //collission
+                        // collision
                         Vector2 initialI = items[i].Velocity;
                         Vector2 initialJ = items[j].Velocity;
 
@@ -132,20 +132,20 @@ namespace PhysK
         {
             if (!Permeable)
             {
-                if (entity.Shape.Aabb.Left + entity.Position.X < bounds.Left)
+                if (entity.Shape.AABB.Left + entity.Position.X < bounds.Left)
                 {
                     entity.Velocity = new Vector2(Math.Abs(entity.Velocity.X), entity.Velocity.Y);
                 }
-                else if (entity.Shape.Aabb.Right + entity.Position.X > bounds.Right)
+                else if (entity.Shape.AABB.Right + entity.Position.X > bounds.Right)
                 {
                     entity.Velocity = new Vector2(-Math.Abs(entity.Velocity.X), entity.Velocity.Y);
                 }
 
-                if (entity.Shape.Aabb.Top + entity.Position.Y < bounds.Top)
+                if (entity.Shape.AABB.Top + entity.Position.Y < bounds.Top)
                 {
                     entity.Velocity = new Vector2(entity.Velocity.X, Math.Abs(entity.Velocity.Y));
                 }
-                else if (entity.Shape.Aabb.Bottom + entity.Position.Y > bounds.Bottom)
+                else if (entity.Shape.AABB.Bottom + entity.Position.Y > bounds.Bottom)
                 {
                     entity.Velocity = new Vector2(entity.Velocity.X, -Math.Abs(entity.Velocity.Y));
                 }

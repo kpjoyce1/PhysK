@@ -29,7 +29,7 @@ namespace PhysK
            
             World = world;
 
-            HollowColor = Color.Red;
+            HollowColor = Color.Green;
 
             FilledColor = Color.Red;
         }
@@ -40,7 +40,8 @@ namespace PhysK
 
             foreach (Particle particle in world.Items)
             {
-                batcher.AddParticle(particle, FilledColor);
+                Color color = (particle is Rigidbody && (particle as Rigidbody).Shape.IsHollow) ? HollowColor : FilledColor;
+                batcher.AddParticle(particle, color);
             }
 
             batcher.End();
