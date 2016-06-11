@@ -28,13 +28,13 @@ namespace PhysK
         {
             if (circleVertexPositionColors == null)
             {
-                circleVertexPositionColors = new VertexPositionColor[101];
+                circleVertexPositionColors = new VertexPositionColor[102];
                 circleVertexPositionColors[0] = new VertexPositionColor(Vector3.Zero, Color.White);
-                for (int i = 1; i < circleVertexPositionColors.Length; i++)
+                for (int i = 1; i < circleVertexPositionColors.Length - 1; i++)
                 {
                     circleVertexPositionColors[i] = new VertexPositionColor(MathUtils.GetUnitCircle(MathHelper.TwoPi * i / circleVertexPositionColors.Length).ToVector3(), Color.Red);
                 }
-
+                circleVertexPositionColors[circleVertexPositionColors.Length - 1] = circleVertexPositionColors[1];
                 vertexPositionColors = new Dictionary<Shape, VertexPositionColor[]>();
             }
             this.graphicsDevice = graphicsDevice;
