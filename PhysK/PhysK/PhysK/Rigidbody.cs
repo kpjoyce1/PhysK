@@ -48,7 +48,7 @@ namespace PhysK
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            shape.AABB.Offset((int)Velocity.X, (int)Velocity.Y);
+            shape.Aabb.Offset(Velocity);
         }
     }
 }

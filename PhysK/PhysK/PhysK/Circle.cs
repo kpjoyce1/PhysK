@@ -19,7 +19,7 @@ namespace PhysK
         public Circle(float radius)
         {
             this.radius = radius;
-            AABB = new Rectangle((int)-radius, (int)-radius, (int)(radius * 2), (int)(radius * 2));
+            Aabb = new RectangleF(-radius, -radius, radius * 2, radius * 2);
         }
     }
 }

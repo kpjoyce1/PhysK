@@ -25,7 +25,7 @@ namespace PhysKSample
         private int frames;
         private int fps;
         private TimeSpan fpsTimer;
-        private Sprite[] Taylors;
+        private Sprite[] taylors;
 
         public GameApplication()
         {
@@ -58,20 +58,20 @@ namespace PhysKSample
 
             Random gen = new Random();
 
-            int TaylorNumber = 10;
+            int taylorNumber = 10;
             //10000 seems to be the limit of just drawing and bouncing off the screen
             //so the upper limit for collision checking is 10000
-            Taylors = new Sprite[TaylorNumber];
-            Particle[] particles = new Particle[TaylorNumber];
-            for (int i = 0; i < TaylorNumber; i++)
+            taylors = new Sprite[taylorNumber];
+            Particle[] particles = new Particle[taylorNumber];
+            for (int i = 0; i < taylorNumber; i++)
             {
 
-                Taylors[i] = new Sprite(Content.Load<Texture2D>(string.Format("circle{0}", gen.Next(1, 5))),
+                taylors[i] = new Sprite(Content.Load<Texture2D>(string.Format("circle{0}", gen.Next(1, 5))),
                     new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - 50),
                         gen.Next(0, GraphicsDevice.Viewport.Width - 50)));
-                Taylors[i].SetCenterOrigin();
+                taylors[i].SetCenterOrigin();
 
-                particles[i] = new Rigidbody(new Circle(25), Taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
+                particles[i] = new Rigidbody(new Circle(25), taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
                     gen.Next(21, 21), 1f);
 
         }
@@ -98,7 +98,7 @@ namespace PhysKSample
 
             for (int i = 0; i < world.Items.Length; i++)
             {
-                Taylors[i].Position = world.Items[i].Position;
+                taylors[i].Position = world.Items[i].Position;
             }
 
 
@@ -112,7 +112,7 @@ namespace PhysKSample
 
             spriteBatch.Begin();
 
-            foreach (Sprite taylor in Taylors)
+            foreach (Sprite taylor in taylors)
             {
                 taylor.Draw(spriteBatch);
             }

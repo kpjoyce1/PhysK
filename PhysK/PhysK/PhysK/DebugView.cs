@@ -28,8 +28,9 @@ namespace PhysK
         {
             if (circleVertexPositionColors == null)
             {
-                circleVertexPositionColors = new VertexPositionColor[100];
-                for (int i = 0; i < circleVertexPositionColors.Length; i++)
+                circleVertexPositionColors = new VertexPositionColor[101];
+                circleVertexPositionColors[0] = new VertexPositionColor(Vector3.Zero, Color.White);
+                for (int i = 1; i < circleVertexPositionColors.Length; i++)
                 {
                     circleVertexPositionColors[i] = new VertexPositionColor(MathUtils.GetUnitCircle(MathHelper.TwoPi * i / circleVertexPositionColors.Length).ToVector3(), Color.Red);
                 }
@@ -55,7 +56,7 @@ namespace PhysK
                 {
                     if ((particle as Rigidbody).Shape is Circle)
                     {
-                        basicEffect.World = Matrix.CreateScale((particle as Rigidbody).Shape.AABB.GetSize().ToVector3() / 2) *
+                        basicEffect.World = Matrix.CreateScale((particle as Rigidbody).Shape.Aabb.Size.ToVector3() / 2) *
                                             Matrix.CreateFromYawPitchRoll(0, 0, (particle as Rigidbody).Rotation) *
                                             Matrix.CreateTranslation(particle.Position.ToVector3());
                         basicEffect.CurrentTechnique.Passes[0].Apply();
@@ -71,7 +72,7 @@ namespace PhysK
                                 vertices[i] = new VertexPositionColor((particle as Rigidbody).Shape.Vertices[i].ToVector3(), Color.Red);
                             }
                         }
-                        basicEffect.World = Matrix.CreateScale((particle as Rigidbody).Shape.AABB.GetSize().ToVector3()) *
+                        basicEffect.World = Matrix.CreateScale((particle as Rigidbody).Shape.Aabb.Size.ToVector3()) *
                                             Matrix.CreateFromYawPitchRoll(0, 0, (particle as Rigidbody).Rotation) *
                                             Matrix.CreateTranslation(particle.Position.ToVector3());
                         basicEffect.CurrentTechnique.Passes[0].Apply();

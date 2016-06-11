@@ -56,7 +56,7 @@ namespace PhysK
             set { restitution = value; }
         }
 
-        public int SpatialGridID;
+        public int SpatialGridId;
 
         public Vector2 Momentum { get { return velocity * mass; } }
 

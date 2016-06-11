@@ -43,13 +43,13 @@ namespace PhysK
 
             grids = new SpatialGrid[4];
 
-            grids[0] = new SpatialGrid(new Rectangle(0, 0, graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2));
+            grids[0] = new SpatialGrid(new RectangleF(0, 0, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
 
-            grids[1] = new SpatialGrid(new Rectangle(graphicsDevice.Viewport.Width / 2, 0, graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2));
+            grids[1] = new SpatialGrid(new RectangleF(graphicsDevice.Viewport.Width / 2f, 0, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
 
-            grids[2] = new SpatialGrid(new Rectangle(0, graphicsDevice.Viewport.Height / 2, graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2));
+            grids[2] = new SpatialGrid(new RectangleF(0, graphicsDevice.Viewport.Height / 2f, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
 
-            grids[3] = new SpatialGrid(new Rectangle(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2, graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2));
+            grids[3] = new SpatialGrid(new RectangleF(graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
 
             this.Permeable = permeable;
         }
@@ -132,20 +132,20 @@ namespace PhysK
         {
             if (!Permeable)
             {
-                if (entity.Shape.AABB.Left + entity.Position.X < bounds.Left)
+                if (entity.Shape.Aabb.Left + entity.Position.X < bounds.Left)
                 {
                     entity.Velocity = new Vector2(Math.Abs(entity.Velocity.X), entity.Velocity.Y);
                 }
-                else if (entity.Shape.AABB.Right + entity.Position.X > bounds.Right)
+                else if (entity.Shape.Aabb.Right + entity.Position.X > bounds.Right)
                 {
                     entity.Velocity = new Vector2(-Math.Abs(entity.Velocity.X), entity.Velocity.Y);
                 }
 
-                if (entity.Shape.AABB.Top + entity.Position.Y < bounds.Top)
+                if (entity.Shape.Aabb.Top + entity.Position.Y < bounds.Top)
                 {
                     entity.Velocity = new Vector2(entity.Velocity.X, Math.Abs(entity.Velocity.Y));
                 }
-                else if (entity.Shape.AABB.Bottom + entity.Position.Y > bounds.Bottom)
+                else if (entity.Shape.Aabb.Bottom + entity.Position.Y > bounds.Bottom)
                 {
                     entity.Velocity = new Vector2(entity.Velocity.X, -Math.Abs(entity.Velocity.Y));
                 }

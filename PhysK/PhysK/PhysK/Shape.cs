@@ -15,7 +15,7 @@ namespace PhysK
 
         private RectangleF aabb;
 
-        public RectangleF AABB
+        public RectangleF Aabb
         {
             get { return aabb; }
             set { aabb = value; }
@@ -27,10 +27,10 @@ namespace PhysK
             aabb = new RectangleF();
             if (vertices.Length > 0)
             {
-                aabb.X =  (vertices.ToList().Min(vertex => vertex.X);
-                aabb.Y =  (vertices.ToList().Min(vertex => vertex.Y);
-                aabb.Width =  (vertices.ToList().Max(vertex => vertex.X) - aabb.X);
-                aabb.Height =  (vertices.ToList().Max(vertex => vertex.Y) - aabb.Y);
+                aabb.X = vertices.ToList().Min(vertex => vertex.X);
+                aabb.Y = vertices.ToList().Min(vertex => vertex.Y);
+                aabb.Width = vertices.ToList().Max(vertex => vertex.X) - aabb.X;
+                aabb.Height = vertices.ToList().Max(vertex => vertex.Y) - aabb.Y;
             }
         }
     }

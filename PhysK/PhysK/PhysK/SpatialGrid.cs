@@ -8,9 +8,9 @@ namespace PhysK
 {
     public class SpatialGrid
     {
-        private Rectangle bounds; /*!< Spatail grid bounds */
+        private RectangleF bounds; /*!< Spatail grid bounds */
 
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get { return bounds; }
             set { bounds = value; }
@@ -27,20 +27,20 @@ namespace PhysK
 
         private int id;
 
-        public int ID
+        public int Id
         {
             get { return id; }
             set { id = value; }
         }
 
 
-        public SpatialGrid(Rectangle bounds)
+        public SpatialGrid(RectangleF bounds)
         {
             this.bounds = bounds;
             this.items = new List<Particle>();
         }
 
-        public void initiallyPopulate(Particle[] entities)
+        public void InitiallyPopulate(Particle[] entities)
         {
             for (int i = 0; i < entities.Length; i++)
             {
@@ -54,14 +54,14 @@ namespace PhysK
             {
                 if (items[i] is Rigidbody)
                 {
-                    if (!(items[i] as Rigidbody).Shape.AABB.Intersects(this.bounds))
+                    if (!(items[i] as Rigidbody).Shape.Aabb.Intersects(bounds))
                     {
                         items.RemoveAt(i);
                     }
                 }
                 else
                 {
-                    if (!this.bounds.Contains((int)items[i].Position.X, (int)items[i].Position.Y))
+                    if (!bounds.Contains(items[i].Position))
                     {
                         items.RemoveAt(i);
                     }
@@ -73,14 +73,14 @@ namespace PhysK
         {
             if (entity is Rigidbody)
             {
-                if (!(entity as Rigidbody).Shape.AABB.Intersects(this.bounds))
+                if (!(entity as Rigidbody).Shape.Aabb.Intersects(bounds))
                 {
                     items.Add(entity);
                 }
             }
             else
             {
-                if (!this.bounds.Contains((int)entity.Position.X, (int)entity.Position.Y))
+                if (!this.bounds.Contains(entity.Position))
                 {
                     items.Add(entity);
                 }
@@ -88,7 +88,7 @@ namespace PhysK
 
         }
 
-        public Particle[] getPossibleCollisions()
+        public Particle[] GetPossibleCollisions()
         {
             return items.ToArray();
         }
