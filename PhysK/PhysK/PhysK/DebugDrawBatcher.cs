@@ -71,7 +71,7 @@ namespace PhysK
                                     Matrix.CreateFromYawPitchRoll(0, 0, rigidbody.Rotation) *
                                     Matrix.CreateTranslation(particle.Position.ToVector3());
 
-                if (rigidbody.Shape.Vertices.Length < 3)
+                if (rigidbody.Shape.Vertices.Length < 2)
                 {
                     for (int i = 0; i < circleVertexPositionColors.Length - 1; i++)
                     {

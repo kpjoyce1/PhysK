@@ -47,6 +47,7 @@ namespace PhysK
             get { return size.Y; }
             set { size.Y = value; }
         }
+        public Rectangle Rectangle { get { return new Rectangle((int)X, (int)Y, (int)Width, (int)Height); } }
 
         public float Left => position.X;
 

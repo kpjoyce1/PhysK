@@ -19,47 +19,43 @@ namespace PhysK
             set { items = value; }
         }
 
-        private Rectangle bounds; /*!<The bounds of the world */
+        private RectangleF bounds; /*!<The bounds of the world */
 
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get { return bounds; }
             set { bounds = value; }
         }
 
+        private QuadTree quadTree;
+
         public float Hamiltonian { get; private set; }
 
-        private SpatialGrid[] grids;
-
         public bool Permeable; /*!< Bool for if items are allowed outside the world bounds*/
+
+        private List<Particle> collideables = new List<Particle>();
 
         public World(GraphicsDevice graphicsDevice, bool permeable = false)
         {
             GraphicsDevice = graphicsDevice;
 
             items = new Particle[100];
+                
+            bounds = new RectangleF(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
 
-            bounds = new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
-
-            grids = new SpatialGrid[4];
-
-            grids[0] = new SpatialGrid(new RectangleF(0, 0, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
-
-            grids[1] = new SpatialGrid(new RectangleF(graphicsDevice.Viewport.Width / 2f, 0, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
-
-            grids[2] = new SpatialGrid(new RectangleF(0, graphicsDevice.Viewport.Height / 2f, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
-
-            grids[3] = new SpatialGrid(new RectangleF(graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f, graphicsDevice.Viewport.Width / 2f, graphicsDevice.Viewport.Height / 2f));
-
+            quadTree = new QuadTree(0, bounds);
+            QuadTree.Pixel = new Texture2D(graphicsDevice, 1, 1);
             this.Permeable = permeable;
         }
 
         public void Update(GameTime gameTime)
         {
             Hamiltonian = 0;
+            quadTree.Clear();
             for (int i = 0; i < items.Length; i++)
             {
                 items[i].Update(gameTime);
+                quadTree.Insert(items[i]);
                 if (items[i] is Rigidbody)
                 {
                     WorldContainment(items[i] as Rigidbody);
@@ -73,17 +69,23 @@ namespace PhysK
 
             for (int i = 0; i < items.Length; i++)
             {
-                for (int j = i + 1; j < items.Length; j++)
+                collideables.Clear();
+
+                quadTree.Retrieve(collideables, items[i]);
+
+                for (int j = 0; j < collideables.Count; j++)
                 {
-                    if (Vector2.Distance(items[i].Position + items[i].Velocity, items[j].Position + items[j].Velocity) < 
-                                                                                                    (items[i] is Rigidbody ? (items[i] as Rigidbody).Shape.AABB.Width / 2 : 0) +
-                                                                                                    (items[j] is Rigidbody ? (items[j] as Rigidbody).Shape.AABB.Width / 2: 0))
+
+                    if (collideables[j] != items[i] && Vector2.Distance(items[i].Position + items[i].Velocity, collideables[j].Position + collideables[j].Velocity) <
+                                                                                                    (items[i] is Rigidbody ? (items[i] as Rigidbody).Shape.AABB.Width / 2 : float.Epsilon) +
+                                                                                                    (collideables[j] is Rigidbody ? (collideables[j] as Rigidbody).Shape.AABB.Width / 2 : float.Epsilon))
                     {
                         // collision
-                        Vector2 initialI = items[i].Velocity;
-                        Vector2 initialJ = items[j].Velocity;
 
-                        Vector2 normal = items[i].Position - items[j].Position;
+                        Vector2 initialI = items[i].Velocity;
+                        Vector2 initialJ = collideables[j].Velocity;
+
+                        Vector2 normal = items[i].Position - collideables[j].Position;
                         normal.Normalize();
 
                         Vector2 effectiveVelocityI = Vector2.Dot(initialI, normal) * normal;
@@ -93,14 +95,20 @@ namespace PhysK
                         Vector2 unchangedVelocityJ = initialJ - effectiveVelocityJ;
 
 
-                        Vector2 changedVelocityI = (effectiveVelocityI * (items[i].Mass - items[j].Mass) + 2 * items[j].Mass * effectiveVelocityJ) / (items[i].Mass + items[j].Mass);
-                        Vector2 changedVelocityJ = (effectiveVelocityJ * (items[j].Mass - items[i].Mass) + 2 * items[i].Mass * effectiveVelocityI) / (items[i].Mass + items[j].Mass);
+                        Vector2 changedVelocityI = (effectiveVelocityI * (items[i].Mass - collideables[j].Mass) + 2 * collideables[j].Mass * effectiveVelocityJ) / (items[i].Mass + collideables[j].Mass);
+                        Vector2 changedVelocityJ = (effectiveVelocityJ * (collideables[j].Mass - items[i].Mass) + 2 * items[i].Mass * effectiveVelocityI) / (items[i].Mass + collideables[j].Mass);
 
                         items[i].Velocity = unchangedVeloctiyI + changedVelocityI;
-                        items[j].Velocity = unchangedVelocityJ + changedVelocityJ;
+                        collideables[j].Velocity = unchangedVelocityJ + changedVelocityJ;
+
                     }
+
                 }
+
+
             }
+
+
         }
 
         private void WorldContainment(Particle entity)

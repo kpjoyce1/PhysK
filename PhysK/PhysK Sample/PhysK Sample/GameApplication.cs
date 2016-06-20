@@ -58,7 +58,8 @@ namespace PhysKSample
 
             Random gen = new Random();
 
-            int taylorNumber = 10;
+            float radius = 10;
+            int taylorNumber = 2000;
             //10000 seems to be the limit of just drawing and bouncing off the screen
             //so the upper limit for collision checking is 10000
             taylors = new Sprite[taylorNumber];
@@ -74,13 +75,17 @@ namespace PhysKSample
 
                 taylors[i].SetCenterOrigin();
 
-                particles[i] = new Rigidbody(
-                    new Circle(25) { IsHollow = gen.Next(2) == 1 }, 
+                particles[i] = new Particle(taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)), 21, 1f);
+                /*
+                    new Rigidbody(
+                    new Circle(radius) { IsHollow = gen.Next(2) == 1 }, 
                     taylors[i].Position,
                     new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
                     gen.Next(21, 21), 
                     1f
                 );
+                */
+                taylors[i].Scale = new Vector2(radius * 2 / taylors[i].Texture.Width, radius * 2 / taylors[i].Texture.Height);
 
         }
         world.Items = particles;
@@ -95,7 +100,7 @@ namespace PhysKSample
         protected override void Update(GameTime gameTime)
         {
             fpsTimer += gameTime.ElapsedGameTime;
-            if(fpsTimer > TimeSpan.FromSeconds(1))
+            if(fpsTimer >= TimeSpan.FromSeconds(1))
             {
                 fps = frames;
                 frames = 0;
@@ -115,7 +120,7 @@ namespace PhysKSample
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Wheat);
             frames++;
 
             spriteBatch.Begin();
@@ -126,18 +131,17 @@ namespace PhysKSample
             }
 
             spriteBatch.End();
-
-
-            debugView.Draw(camera.View, camera.Projection);
-
+   
+            //debugView.Draw(camera.View, camera.Projection);
+            
             spriteBatch.Begin();
             
-            spriteBatch.DrawString(font, fps.ToString(), new Vector2(GraphicsDevice.Viewport.Width - 40, 0), Color.Black);
+            spriteBatch.DrawString(font, fps.ToString(), new Vector2(GraphicsDevice.Viewport.Width - 40, 0), Color.White);
             
-            spriteBatch.DrawString(font, world.Hamiltonian.ToString(), Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, world.Hamiltonian.ToString(), Vector2.Zero, Color.White);
 
             spriteBatch.End();
-
+            
 
             base.Draw(gameTime);
         }

@@ -55,9 +55,8 @@ namespace PhysK
             get { return restitution; }
             set { restitution = value; }
         }
-
-        public int SpatialGridId;
-
+        
+        public bool JustHit;
         public Vector2 Momentum => velocity * mass;
 
         public Particle(Vector2 position, Vector2 velocity, float mass, float restitution)
