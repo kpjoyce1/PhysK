@@ -49,8 +49,8 @@ namespace PhysK
             this.objects = new List<Particle>();
             this.bounds = bounds;
             this.nodes = new QuadTree[4];
-            this.maxLevel = 10;
-            this.maxObjects = 20;
+            this.maxLevel = 500;
+            this.maxObjects = 5;
         }
 
         public void Clear()

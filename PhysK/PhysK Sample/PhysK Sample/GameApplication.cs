@@ -42,10 +42,10 @@ namespace PhysKSample
 
         protected override void LoadContent()
         {
-
+            IsMouseVisible = true;
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            graphics.PreferredBackBufferWidth = 1200;
-            graphics.PreferredBackBufferHeight = 800;
+            graphics.PreferredBackBufferWidth = 1500;
+            graphics.PreferredBackBufferHeight = 850;
             graphics.ApplyChanges();
             world = new World(GraphicsDevice);
             camera = new Camera(GraphicsDevice);
@@ -57,8 +57,8 @@ namespace PhysKSample
             font = Content.Load<SpriteFont>("spritefont");
 
             Random gen = new Random();
-
-            float radius = 10;
+        
+            float radius = 1f;
             int taylorNumber = 2000;
             //10000 seems to be the limit of just drawing and bouncing off the screen
             //so the upper limit for collision checking is 10000
@@ -75,19 +75,19 @@ namespace PhysKSample
 
                 taylors[i].SetCenterOrigin();
 
-                particles[i] = new Particle(taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)), 21, 1f);
-                /*
+                particles[i] = //new Particle(taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)), 21, 1f);
+                
                     new Rigidbody(
                     new Circle(radius) { IsHollow = gen.Next(2) == 1 }, 
                     taylors[i].Position,
-                    new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)),
-                    gen.Next(21, 21), 
+                    new Vector2(gen.Next(0, 2), gen.Next(0, 2)),
+                    gen.Next(1, 10), 
                     1f
                 );
-                */
+                          
                 taylors[i].Scale = new Vector2(radius * 2 / taylors[i].Texture.Width, radius * 2 / taylors[i].Texture.Height);
 
-        }
+            }
         world.Items = particles;
 
         }
@@ -107,21 +107,25 @@ namespace PhysKSample
                 fpsTimer = TimeSpan.Zero;
             }
 
+
+
             world.Update(gameTime);
 
+            
             for (int i = 0; i < world.Items.Length; i++)
             {
                 taylors[i].Position = world.Items[i].Position;
             }
-
+            
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Wheat);
+            GraphicsDevice.Clear(Color.Black);
             frames++;
+            
 
             spriteBatch.Begin();
 
@@ -131,13 +135,18 @@ namespace PhysKSample
             }
 
             spriteBatch.End();
-   
+            
             //debugView.Draw(camera.View, camera.Projection);
             
+
             spriteBatch.Begin();
             
             spriteBatch.DrawString(font, fps.ToString(), new Vector2(GraphicsDevice.Viewport.Width - 40, 0), Color.White);
-            
+
+            spriteBatch.DrawString(font, world.UpdateTime.ToString(), 
+                                   new Vector2(GraphicsDevice.Viewport.Width - 40, + font.MeasureString(world.UpdateTime.ToString()).Y),
+                                   Color.White);
+
             spriteBatch.DrawString(font, world.Hamiltonian.ToString(), Vector2.Zero, Color.White);
 
             spriteBatch.End();

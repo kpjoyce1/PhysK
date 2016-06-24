@@ -25,7 +25,7 @@ namespace PhysK
         {
             if (circleVertexPositionColors == null)
             {
-                circleVertexPositionColors = new Vector2[52];
+                circleVertexPositionColors = new Vector2[8];
                 circleVertexPositionColors[0] = Vector2.Zero;
                 for (int i = 1; i < circleVertexPositionColors.Length - 1; i++)
                 {

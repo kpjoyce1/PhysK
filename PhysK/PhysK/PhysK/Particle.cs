@@ -55,7 +55,9 @@ namespace PhysK
             get { return restitution; }
             set { restitution = value; }
         }
-        
+
+        public bool Sleep;
+        public int FramesAtRest;
         public bool JustHit;
         public Vector2 Momentum => velocity * mass;
 
