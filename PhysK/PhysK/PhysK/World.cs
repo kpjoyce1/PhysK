@@ -39,7 +39,12 @@ namespace PhysK
 
         public bool Permeable; /*!< Bool for if items are allowed outside the world bounds*/
 
-        
+
+        public static float GravitationalConstant => 6.67498f * (float)Math.Pow(10, -11);
+
+        public static float CoulumbConstant => 8.99f * (float)Math.Pow(10, 0); //10^9
+
+
         public World(GraphicsDevice graphicsDevice, bool permeable = false)
         {
             GraphicsDevice = graphicsDevice;
@@ -60,57 +65,65 @@ namespace PhysK
 
             watch.Start();
             Hamiltonian = 0;
-
+            quadTree.Mass = 0;
             quadTree.Clear();
+            quadTree.Mass = 0f;
+            quadTree.MassPosition = Vector2.Zero;
+            quadTree.Charge = 0f;
+            quadTree.ChargePosition = Vector2.Zero;
+
             for (int i = 0; i < items.Length; i++)
             {
-                items[i].Update(gameTime);
                 quadTree.Insert(items[i]);
-                if (items[i] is Rigidbody)
-                {
-                    WorldContainment(items[i] as Rigidbody);
-                }
-                else
-                {
-                    WorldContainment(items[i]);
-                }
-
-                if(items[i].Velocity == Vector2.Zero)
-                {
-                    items[i].FramesAtRest++;
-                }
-                else
-                {
-                    items[i].FramesAtRest = 0;
-                }
-
-                if(items[i].FramesAtRest > 3)
-                {
-                    items[i].Sleep = true;
-                }
-                else
-                {
-                    items[i].Sleep = false;
-                }
-
-                Hamiltonian += items[i].Velocity.LengthSquared() * items[i].Mass;
-
             }
-
+            ;
             Parallel.ForEach(items, (item) =>
             {
+                item.QuadTreeForces.Clear();
+                
+                item.QuadTreeForces.Add(quadTree.GetEffectiveGravity(Vector2.Zero, item));
+                item.QuadTreeForces.Add(quadTree.GetEffectiveCoulumbForce(Vector2.Zero, item));
+                item.Update(gameTime);
+
+
+                if (item is Rigidbody)
+                {
+                    WorldContainment(item as Rigidbody);
+                }
+                else
+                {
+                    WorldContainment(item);
+                }
+
+                if (item.Velocity == Vector2.Zero)
+                {
+                    item.FramesAtRest++;
+                }
+                else
+                {
+                    item.FramesAtRest = 0;
+                }
+
+                if (item.FramesAtRest > 3)
+                {
+                    item.Sleep = true;
+                }
+                else
+                {
+                    item.Sleep = false;
+                }
+
+                Hamiltonian += item.Velocity.LengthSquared() * item.Mass;
+
 
                 if (!item.Sleep)
                 {
                     List<Particle> collideables = new List<Particle>();
-
-
+                    
                     quadTree.Retrieve(collideables, item);
-
-
+                    
                     for (int j = 0; j < collideables.Count; j++)
                     {
-
                         if (collideables[j] != null && collideables[j] != item && Vector2.Distance(item.Position + item.Velocity, collideables[j].Position + collideables[j].Velocity) <
                                                                                                         (item is Rigidbody ? (item as Rigidbody).Shape.AABB.Width / 2 : float.Epsilon) +
                                                                                                         (collideables[j] is Rigidbody ? (collideables[j] as Rigidbody).Shape.AABB.Width / 2 : float.Epsilon))

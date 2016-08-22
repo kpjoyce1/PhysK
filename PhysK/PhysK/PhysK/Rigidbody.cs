@@ -36,10 +36,11 @@ namespace PhysK
 
         public Shape Shape => shape;
 
-        public Rigidbody(Shape shape, Vector2 position, Vector2 velocity, float mass, float restitution)
-            : base(position, velocity, mass, restitution)
+        public Rigidbody(Shape shape, Vector2 position, Vector2 velocity, float mass, float charge, float restitution)
+            : base(position, velocity, mass, charge, restitution)
         {
             this.shape = shape;
+            
         }
 
         public override void Update(GameTime gameTime)

@@ -44,22 +44,23 @@ namespace PhysKSample
         {
             IsMouseVisible = true;
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            graphics.PreferredBackBufferWidth = 1500;
-            graphics.PreferredBackBufferHeight = 850;
+            graphics.PreferredBackBufferWidth = 1000;
+            graphics.PreferredBackBufferHeight = 700;
             graphics.ApplyChanges();
             world = new World(GraphicsDevice);
+            world.Permeable = true;
             camera = new Camera(GraphicsDevice);
-            camera.Position = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) / 2;
+            camera.Position = new Vector2(0, 0);// GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) / 2;
 
             debugView = new DebugView(GraphicsDevice, world);
-            
+
 
             font = Content.Load<SpriteFont>("spritefont");
 
             Random gen = new Random();
-        
-            float radius = 1f;
-            int taylorNumber = 2000;
+
+            float radius = 2f;
+            int taylorNumber = 700;
             //10000 seems to be the limit of just drawing and bouncing off the screen
             //so the upper limit for collision checking is 10000
             taylors = new Sprite[taylorNumber];
@@ -69,26 +70,27 @@ namespace PhysKSample
 
                 taylors[i] = new Sprite(
                     Content.Load<Texture2D>($"circle{gen.Next(1, 5)}"),
-                    new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - 50),
-                        gen.Next(0, GraphicsDevice.Viewport.Width - 50))
+                    new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - (int)radius),
+                        gen.Next(0, GraphicsDevice.Viewport.Height - (int)radius))
                 );
 
                 taylors[i].SetCenterOrigin();
 
                 particles[i] = //new Particle(taylors[i].Position, new Vector2(gen.Next(-4, 4), gen.Next(-4, 4)), 21, 1f);
-                
+
                     new Rigidbody(
-                    new Circle(radius) { IsHollow = gen.Next(2) == 1 }, 
+                    new Circle(radius) { IsHollow = gen.Next(1,1) == 1 },
                     taylors[i].Position,
-                    new Vector2(gen.Next(0, 2), gen.Next(0, 2)),
-                    gen.Next(1, 10), 
+                    new Vector2(gen.Next(0, 1), gen.Next(0, 1)),
+                    gen.Next(1, 10),
+                    gen.Next(-1, 2),
                     1f
                 );
-                          
+
                 taylors[i].Scale = new Vector2(radius * 2 / taylors[i].Texture.Width, radius * 2 / taylors[i].Texture.Height);
 
             }
-        world.Items = particles;
+            world.Items = particles;
 
         }
 
@@ -111,12 +113,36 @@ namespace PhysKSample
 
             world.Update(gameTime);
 
-            
+
+
             for (int i = 0; i < world.Items.Length; i++)
             {
+                world.Items[i].Sleep = false;
                 taylors[i].Position = world.Items[i].Position;
+                world.Items[i].Forces.Clear();
             }
+            MouseState ms = Mouse.GetState();
+            KeyboardState ks = Keyboard.GetState();
             
+            if(ms.LeftButton == ButtonState.Pressed)
+            {
+                for (int i = 0; i < world.Items.Length; i++)
+                {
+                    Vector2 direction = new Vector2(ms.X, ms.Y) - world.Items[i].Position;
+                    direction.Normalize();
+                    direction *= 10f;
+
+                    world.Items[i].Forces.Add(direction);
+
+                }
+            }
+            if(ks.IsKeyDown(Keys.S))
+            {
+                for(int i = 0; i < world.Items.Length; i++)
+                {
+                    world.Items[i].Velocity = Vector2.Zero;
+                }
+            }
 
             base.Update(gameTime);
         }
