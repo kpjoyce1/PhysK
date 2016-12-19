@@ -90,7 +90,7 @@ namespace PhysK
             quadTreeForces = new List<Vector2>();
         }
 
-        private float friction = 0.001f;
+        private float friction = 0.01f;
 
         public virtual void Update(GameTime gameTime)
         {

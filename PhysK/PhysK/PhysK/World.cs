@@ -135,6 +135,8 @@ namespace PhysK
 
                             Vector2 normal = item.Position - collideables[j].Position;
 
+                            
+
                             if (normal != Vector2.Zero)
                             {
                                 normal.Normalize();
@@ -151,6 +153,9 @@ namespace PhysK
 
                             item.Velocity = unchangedVeloctiyI + changedVelocityI;
                             collideables[j].Velocity = unchangedVelocityJ + changedVelocityJ;
+
+                            item.Position += item.Velocity;
+                            collideables[j].Position += collideables[j].Velocity;
 
                         }
 

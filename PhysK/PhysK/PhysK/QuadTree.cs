@@ -87,8 +87,8 @@ namespace PhysK
             this.objects = new List<Particle>();
             this.bounds = bounds;
             this.nodes = new QuadTree[4];
-            this.maxLevel = 500;
-            this.maxObjects = 5;
+            this.maxLevel = 50;
+            this.maxObjects = 1;
             this.mass = 0;
         }
 
@@ -266,6 +266,7 @@ namespace PhysK
                     }
                 }
                 nodes[index].GetEffectiveGravity(effectiveCoulumb, entity);
+                return effectiveCoulumb;
             }
 
             for (int i = 0; i < objects.Count; i++)
@@ -300,6 +301,7 @@ namespace PhysK
                     }
                 }
                 nodes[index].GetEffectiveGravity(effectiveGravity, entity);
+                return effectiveGravity;
             }
 
             for (int i = 0; i < objects.Count; i++)

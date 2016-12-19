@@ -53,14 +53,12 @@ namespace PhysKSample
             camera.Position = new Vector2(0, 0);// GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) / 2;
 
             debugView = new DebugView(GraphicsDevice, world);
-
-
+            
             font = Content.Load<SpriteFont>("spritefont");
 
             Random gen = new Random();
-
-            float radius = 2f;
-            int taylorNumber = 700;
+                
+            int taylorNumber = 2;
             //10000 seems to be the limit of just drawing and bouncing off the screen
             //so the upper limit for collision checking is 10000
             taylors = new Sprite[taylorNumber];
@@ -68,8 +66,9 @@ namespace PhysKSample
             for (int i = 0; i < taylorNumber; i++)
             {
 
+                float radius = 10f;//gen.Next(1, 51);
                 taylors[i] = new Sprite(
-                    Content.Load<Texture2D>($"circle{gen.Next(1, 5)}"),
+                    Content.Load<Texture2D>($"circle{gen.Next(1, 6)}"),
                     new Vector2(gen.Next(0, GraphicsDevice.Viewport.Width - (int)radius),
                         gen.Next(0, GraphicsDevice.Viewport.Height - (int)radius))
                 );
@@ -82,8 +81,8 @@ namespace PhysKSample
                     new Circle(radius) { IsHollow = gen.Next(1,1) == 1 },
                     taylors[i].Position,
                     new Vector2(gen.Next(0, 1), gen.Next(0, 1)),
-                    gen.Next(1, 10),
-                    gen.Next(-1, 2),
+                    radius,
+                    gen.Next(-2, 3),
                     1f
                 );
 
